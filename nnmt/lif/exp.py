@@ -1597,14 +1597,22 @@ def _sensitivity_measure(effective_connectivity, frequency,
     # TODO: currently need to catch this for the fixture creation
     if (isinstance(resorted_eigenvalues_mask, str)
             and resorted_eigenvalues_mask == 'None'):
-        resorted_eigenvalues_mask = 'None'
+        pass
 
-    if resorted_eigenvalues_mask != 'None':
+    elif isinstance(resorted_eigenvalues_mask, np.ndarray):
         # apply the resorting
         e = e[resorted_eigenvalues_mask[frequency_index, :]]
         U_l = U_l[:, resorted_eigenvalues_mask[frequency_index, :]]
         U_r = U_r[:, resorted_eigenvalues_mask[frequency_index, :]]
+        
+    else: 
+        warnings.warn('Type of `resorted eigenvalues_mask` should either be'
+                      '`str` or `np.ndarray`, but is '
+                      f'{type(resorted_eigenvalues_mask)}'
+                      'Please cross-check the input given to '
+                      '`nnmt.lif.exp.sensitivity_measure`')
 
+ 
     if eigenvalue_index == 'None':
         # find eigenvalue closest to one
         eigenvalue_index = np.argmin(np.abs(e - 1))
